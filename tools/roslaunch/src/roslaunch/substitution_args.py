@@ -46,7 +46,7 @@ except ImportError:
 
 import rosgraph.names
 import rospkg
-import loader
+from roslaunch.loader import convert_value
 
 _rospack = None
 
@@ -81,8 +81,7 @@ def _env(resolved, a, args, context):
 def _eval_optenv(name, default=''):
     if name in os.environ:
         return os.environ[name]
-    else:
-        return default
+    return default
 
 def _optenv(resolved, a, args, context):
     """
@@ -98,10 +97,9 @@ def _optenv(resolved, a, args, context):
 def _eval_anon(id, anons):
     if id in anons:
         return anons[id]
-    else:
-        resolve_to = rosgraph.names.anonymous_name(id)
-        anons[id] = resolve_to
-        return resolve_to
+    resolve_to = rosgraph.names.anonymous_name(id)
+    anons[id] = resolve_to
+    return resolve_to
 
 def _anon(resolved, a, args, context):
     """
@@ -293,7 +291,7 @@ class _DictWrapper(object):
         try:
             return self._functions[key]
         except KeyError:
-            return loader.convert_value(self._args[key], 'auto')
+            return convert_value(self._args[key], 'auto')
 
 def _eval(s, context):
     if 'anon' not in context:
@@ -304,8 +302,8 @@ def _eval(s, context):
     # inject correct anon context
     def _eval_anon_context(id): return _eval_anon(id, anons=context['anon'])
     # inject arg context
-    def _eval_arg_context(name): return loader.convert_value(_eval_arg(name, args=context['arg']), 'auto')
-    functions = dict(anon = _eval_anon_context, arg = _eval_arg_context)
+    def _eval_arg_context(name): return convert_value(_eval_arg(name, args=context['arg']), 'auto')
+    functions = dict(anon=_eval_anon_context, arg=_eval_arg_context)
     functions.update(_eval_dict)
 
     # ignore values containing double underscores (for safety)
