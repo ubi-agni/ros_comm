@@ -2,6 +2,14 @@
 Changelog for package roscpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.11.20 (2016-06-27)
+--------------------
+* fix segfault if connection fails (`#807 <https://github.com/ros/ros_comm/pull/807>`_)
+
+1.11.19 (2016-04-18)
+--------------------
+* use directory specific compiler flags (`#785 <https://github.com/ros/ros_comm/pull/785>`_)
+
 1.11.18 (2016-03-17)
 --------------------
 * fix CMake warning about non-existing targets
