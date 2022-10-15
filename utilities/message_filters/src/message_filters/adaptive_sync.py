@@ -22,6 +22,12 @@ class AdaptiveTimeSynchronizer(SimpleFilter):
         self.queues = [SortedDict() for f in fs]
         self.input_connections = [f.registerCallback(self.add, q) for f, q in zip(fs, self.queues)]
 
+    def debug(self, candidate_lists=None):
+        # print("debug:", self.time_range)
+        for l in candidate_lists or self.candidate_lists:
+            times = [item[0] for item in l]
+            print(f"{l[0][1]._type: <35}{times}")
+
     def add(self, msg, my_queue):
         with self.lock:
             # check for jump backs of ROS time
@@ -45,6 +51,7 @@ class AdaptiveTimeSynchronizer(SimpleFilter):
 
             # time ranges yield from heads of all queues: <0: past, >0: future stamps
             time_range = [q.peekitem(-1)[0] - t for q in self.queues]
+            self.time_range = [q.peekitem(-1)[0] for q in self.queues]  # for debugging
             tmin, tmax = min(time_range), max(time_range)
 
             # only consider message that are within the time range of the heads
@@ -58,4 +65,5 @@ class AdaptiveTimeSynchronizer(SimpleFilter):
                 while len(q) and q.peekitem(0)[0] <= t:
                     q.popitem(0)
 
+            self.candidate_lists = candidate_lists  # for debugging
             self.signalMessage(*msgs)
