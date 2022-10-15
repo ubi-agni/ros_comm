@@ -34,12 +34,8 @@ class AdaptiveTimeSynchronizer(SimpleFilter):
                     q.clear()
             self.latest_time = now
 
-            t = msg.header.stamp
-            if is_simtime and t > now: # received message from future: update ROS time
-                rospy.logwarn(f"Message from future: {t} > {now}")
-                rospy.rostime._set_rostime(t)
-
             # store new message, but limit to queue_size
+            t = msg.header.stamp
             my_queue[t] = msg
             while len(my_queue) > self.queue_size:
                 my_queue.popitem(0)  # delete oldest message (with smallest stamp)
