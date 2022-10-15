@@ -332,3 +332,6 @@ class ApproximateTimeSynchronizer(TimeSynchronizer):
                     del q[t]
                 break  # fast finish after the synchronization
         self.lock.release()
+
+
+from .adaptive_sync import AdaptiveTimeSynchronizer
