@@ -40,6 +40,8 @@ target_link_libraries(play rosbag)
 
 if(NOT WIN32)
   add_executable(encrypt src/encrypt.cpp)
+  # Needed for Boost's deprecated progress.hpp on Ubuntu 24.04.
+  target_compile_definitions(encrypt PUBLIC -DBOOST_TIMER_ENABLE_DEPRECATED)
   target_link_libraries(encrypt ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 endif()
 
